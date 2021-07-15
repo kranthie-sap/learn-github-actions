@@ -7,14 +7,14 @@ on:
     branches: [ $default-branch ]
 
 jobs:
-  steps:
-    build:
-      runs-on: ubuntu-latest
-      - run: echo "Pipeline info:"
-      - run: echo "[Event - ${{ github.event_name }}, OS - ${{ github.event_name }}, Branch - ${{ github.ref }}]"
-      strategy:
-        matrix:
-          node-version: [12.x, 14.x, 16.x]
+  build:
+    runs-on: ubuntu-latest
+    - run: echo "Pipeline info:"
+    - run: echo "[Event - ${{ github.event_name }}, OS - ${{ github.event_name }}, Branch - ${{ github.ref }}]"
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+    steps:
       - uses: actions/checkout@v2
       - name: Cache pnpm modules
         uses: actions/cache@v2
