@@ -1,20 +1,16 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+  - push
+  - pull_request
 
 jobs:
   runs-on: ubuntu-latest
-  
+
   steps:
     build:
-      strategy:
-        matrix:
-          node-version: [12.x, 14.x, 16.x]
       - uses: actions/checkout@v2
+
       - name: Cache pnpm modules
         uses: actions/cache@v2
         env:
@@ -26,9 +22,9 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-
 
       - uses: pnpm/action-setup@v2.0.1
-          with:
-            version: 6.0.2
-            run_install: true
+        with:
+          version: 6.0.2
+          run_install: true
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
