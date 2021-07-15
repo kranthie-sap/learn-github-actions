@@ -1,0 +1,4 @@
+## https://github.wdf.sap.corp/ux-engineering/tools-suite/blob/master/docs/dev-guide/formatting.md
+node_modules/
+reports/
+dist/
