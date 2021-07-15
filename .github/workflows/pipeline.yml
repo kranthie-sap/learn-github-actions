@@ -10,10 +10,9 @@ jobs:
   runs-on: ubuntu-latest
   
   steps:
-    - run: echo "Pipeline info:"
-    - run: echo "[Event - ${{ github.event_name }}, OS - ${{ github.event_name }}, Branch - ${{ github.ref }}]"
-
     build:
+      - run: echo "Pipeline info:"
+      - run: echo "[Event - ${{ github.event_name }}, OS - ${{ github.event_name }}, Branch - ${{ github.ref }}]"
       strategy:
         matrix:
           node-version: [12.x, 14.x, 16.x]
