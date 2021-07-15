@@ -12,7 +12,7 @@ jobs:
   steps:
     - run: echo "Pipeline info:"
     - run: echo "[Event - ${{ github.event_name }}, OS - ${{ github.event_name }}, Branch - ${{ github.ref }}]"
-      
+
     build:
       strategy:
         matrix:
