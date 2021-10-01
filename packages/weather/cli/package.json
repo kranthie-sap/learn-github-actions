@@ -1,4 +1,4 @@
 {
-  "name": "@sap-test/weather-cli",
-  "private": true
+  "name": "@sap-ux/weather-cli",
+  "private": false
 }

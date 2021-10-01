@@ -1,6 +1,6 @@
 {
-  "name": "@sap-test/weather-core",
-  "private": true,
+  "name": "@sap-ux/weather-core",
+  "private": false,
   "dependencies": {
     "dotenv": "10.0.0",
     "openweathermap-ts": "1.2.7"
