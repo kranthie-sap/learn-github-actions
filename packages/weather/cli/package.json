@@ -1,4 +1,5 @@
 {
   "name": "@sap-ux/weather-cli",
-  "private": false
+  "private": false,
+  "version": "0.0.2"
 }

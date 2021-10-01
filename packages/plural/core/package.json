@@ -1,4 +1,5 @@
 {
   "name": "@sap-ux/plural-core",
-  "private": true
+  "private": true,
+  "version": "0.0.2"
 }
