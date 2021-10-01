@@ -8,7 +8,9 @@
     "format": "pnpm recursive run format",
     "lint": "pnpm recursive run lint",
     "lint:fix": "pnpm recursive run lint:fix",
-    "test": "pnpm recursive run test"
+    "test": "pnpm recursive run test",
+    "ci:version": "changeset version",
+    "ci:publish": "changeset publish"
   },
   "repository": {
     "type": "git",
