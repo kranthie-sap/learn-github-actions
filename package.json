@@ -1,0 +1,30 @@
+{
+  "name": "@sap-ux/learn-github-actions",
+  "version": "0.0.1",
+  "description": "Learn GitHub Actions",
+  "private": true,
+  "scripts": {
+    "build": "pnpm recursive run build",
+    "format": "pnpm recursive run format",
+    "lint": "pnpm recursive run lint",
+    "lint:fix": "pnpm recursive run lint:fix",
+    "test": "pnpm recursive run test",
+    "ci:version": "changeset version",
+    "ci:publish": "changeset publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kranthie-sap/learn-github-actions.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kranthie-sap/learn-github-actions/issues"
+  },
+  "homepage": "https://github.com/kranthie-sap/learn-github-actions#readme",
+  "devDependencies": {
+    "@changesets/cli": "2.17.0",
+    "@types/node": "16.3.0",
+    "typescript": "4.3.5"
+  }
+}
