@@ -54,6 +54,7 @@ jobs:
 on:
   push:
     branches: [main]
+jobs:
   version:
     timeout-minutes: 15
     runs-on: ubuntu-latest
