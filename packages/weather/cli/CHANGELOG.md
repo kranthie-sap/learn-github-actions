@@ -1,5 +1,14 @@
 # @sap-ux/weather-cli
 
+## 0.0.5
+
+### Patch Changes
+
+-   d71736b: Update weather cli readme
+-   Updated dependencies [63781a0]
+-   Updated dependencies [325e474]
+    -   @sap-ux/weather-core@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
