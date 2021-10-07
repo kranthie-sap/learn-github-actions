@@ -1,5 +1,11 @@
 # @sap-ux/weather-core
 
+## 0.0.6
+
+### Patch Changes
+
+-   0df91be: Update weather core module's README file again
+
 ## 0.0.5
 
 ### Patch Changes
