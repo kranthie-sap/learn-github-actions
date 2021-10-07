@@ -9,7 +9,7 @@
     "lint": "pnpm recursive run lint",
     "lint:fix": "pnpm recursive run lint:fix",
     "test": "pnpm recursive run test",
-    "ci:version": "changeset version",
+    "ci:version": "changeset version && pnpm install --lockfile-only",
     "ci:publish": "changeset publish"
   },
   "repository": {
