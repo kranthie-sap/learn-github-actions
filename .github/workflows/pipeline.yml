@@ -134,6 +134,7 @@ jobs:
           git add -A
           git status
           git commit -m "chore: apply latest changesets" || echo "No changes to commit"
+          git log  --pretty=oneline | head -n 10
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
