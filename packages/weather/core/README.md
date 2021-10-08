@@ -6,4 +6,3 @@
 ```
 apiKey=<API_KEY>
 ```
-
