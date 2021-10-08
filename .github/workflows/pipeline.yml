@@ -93,6 +93,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
+    outputs:
+      changes: ${{ steps.changesetVersion.outputs.changes }} # map step output to job output
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
@@ -122,6 +124,7 @@ jobs:
         id: changesetVersion
         run: |
           echo ::set-output name=changes::$(pnpm changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+          git status
       - name: Commit and push changes
         if: steps.changesetVersion.outputs.changes == 'true'
         # pnpm install --lockfile-only needs to run to update the lockfile
@@ -134,7 +137,7 @@ jobs:
           git add -A
           git status
           git commit -m "chore: apply latest changesets" || echo "No changes to commit"
-          git log  --pretty=oneline | head -n 10
+          git log --pretty=oneline | head -n 10
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -173,8 +176,9 @@ jobs:
         run: pnpm recursive run build
       - name: Setup npmrc with npmjs.com token
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
-      - name: "Publish to npmjs"
-        run: |
-          pnpm changeset publish
+      - name: 'Publish to npmjs'
+        uses: changesets/action@main
+        with:
+          publish: pnpm changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
