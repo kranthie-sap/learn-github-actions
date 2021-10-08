@@ -101,48 +101,51 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.ACTIONS_PAT }}
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.0.2
-          run_install: true
-      - name: Cache pnpm modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-pnpm-modules
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+      # - name: Setup pnpm
+      #   uses: pnpm/action-setup@v2.0.1
+      #   with:
+      #     version: 6.0.2
+      #     run_install: true
+      # - name: Cache pnpm modules
+      #   uses: actions/cache@v2
+      #   env:
+      #     cache-name: cache-pnpm-modules
+      #   with:
+      #     path: ~/.pnpm-store
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-${{ env.cache-name }}-
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - name: Install pnpm modules
-        run: pnpm install
-      - name: Generate test file
-        run: |
-          date > generated.txt
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git status
-          git add .
-          git status
-          git commit -m "chore: apply latest changesets"
-          git log --pretty=oneline | head -n 10
-          git push
+      # - name: Install pnpm modules
+      #   run: pnpm install
+      # - name: Generate test file
+      #   run: |
+      #     date > generated.txt
+      #     git config user.name github-actions
+      #     git config user.email github-actions@github.com
+      #     git status
+      #     git add .
+      #     git status
+      #     git commit -m "chore: apply latest changesets"
+      #     git log --pretty=oneline | head -n 10
+      #     git push
       - name: Apply changesets
         id: changesetVersion
         run: |
-          echo ::set-output name=changes::$(pnpm changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
-          git status
+          npm install --no-package-lock --no-save @changesets/cli
+          echo ::set-output name=changes::$(npx changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+        # run: |
+        #   echo ::set-output name=changes::$(pnpm changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+        #   git status
       - name: Commit and push changes
         if: steps.changesetVersion.outputs.changes == 'true'
         # pnpm install needs to run to update the lockfile
         run: |
-          git config user.name 'GitHub Changeset Action'
-          git config user.email '<>'
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git status
           pnpm install --lockfile-only
           git status
@@ -151,8 +154,8 @@ jobs:
           git commit -m "chore: apply latest changesets" || echo "No changes to commit"
           git log --pretty=oneline | head -n 10
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release-auto:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
     # This job needs to run after the version-auto commit has been merged - so check if that step returns 'false'
