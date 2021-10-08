@@ -1,5 +1,11 @@
 # @sap-ux/weather-core
 
+## 0.0.9
+
+### Patch Changes
+
+-   449767c: Update pipeline
+
 ## 0.0.8
 
 ### Patch Changes

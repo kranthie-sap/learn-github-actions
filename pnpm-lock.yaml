@@ -23,7 +23,7 @@ importers:
 
   packages/weather/cli:
     specifiers:
-      '@sap-ux/weather-core': 0.0.8
+      '@sap-ux/weather-core': 0.0.9
     dependencies:
       '@sap-ux/weather-core': link:../core
 
