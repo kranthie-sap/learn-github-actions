@@ -47,8 +47,7 @@ jobs:
         run: pnpm recursive run test
   release-manual:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: ${{ false }} # disable temporarily
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ false }} # && github.event_name == 'push' && github.ref == 'refs/heads/main' # disable temporarily
     runs-on: ubuntu-latest
     needs: build
     steps:
