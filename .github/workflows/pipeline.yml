@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x]
 
     steps:
       - name: Checkout code repository
@@ -45,9 +45,9 @@ jobs:
         run: pnpm recursive run lint
       - name: Run unit tests
         run: pnpm recursive run test
-  release:
+  release-manual:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ false }} # && github.event_name == 'push' && github.ref == 'refs/heads/main' # disable temporarily
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -86,5 +86,91 @@ jobs:
           commit: 'chore: bump versions and publish to npmjs'
           title: 'chore: bump versions and publish to npmjs'
           publish: pnpm ci:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  version-auto:
+    # Run release job only on pushes to the main branch. The job depends on completion of the build job.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pnpm-modules
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Install pnpm modules
+        run: pnpm install
+      - name: Apply changesets
+        id: changesetVersion
+        run: |
+          git config --global user.name 'SAP UX Engineering (CI/CD)'
+          git config --global user.email kranthi.kumar.muppala@sap.com
+          echo ::set-output name=changes::$(pnpm changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
+      - name: Commit and push changes
+        if: steps.changesetVersion.outputs.changes == 'true'
+        # pnpm install --lockfile-only needs to run to update the lockfile
+        run: |
+          pnpm install --lockfile-only
+          git add .
+          git commit -m "chore: apply latest changesets" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release-auto:
+    # Run release job only on pushes to the main branch. The job depends on completion of the build job.
+    # This job needs to run after the version-auto commit has been merged - so check if that step returns 'false'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version-auto.outputs.changes == 'false'
+    runs-on: ubuntu-latest
+    needs: version-auto
+    steps:
+      - name: Checkout code repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.0.2
+          run_install: true
+      - name: Cache pnpm modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-pnpm-modules
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Install pnpm modules
+        run: pnpm install
+      - name: Run build
+        run: pnpm recursive run build
+      - name: Setup npmrc with npmjs.com token
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
+      - name: "Publish to npmjs"
+        run: |
+          pnpm changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
