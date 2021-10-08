@@ -1,8 +1,8 @@
 {
   "name": "@sap-ux/weather-cli",
   "private": false,
-  "version": "0.0.7",
+  "version": "0.0.8",
   "dependencies": {
-    "@sap-ux/weather-core": "0.0.7"
+    "@sap-ux/weather-core": "0.0.8"
   }
 }
