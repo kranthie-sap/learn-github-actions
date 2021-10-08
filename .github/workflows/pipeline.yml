@@ -121,6 +121,19 @@ jobs:
           node-version: 14.x
       - name: Install pnpm modules
         run: pnpm install
+      - name: Generate test file
+        run: |
+          date > generated.txt
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          pnpm changeset version
+          git add .
+          git status
+          pnpm install --lockfile-only
+          git status
+          git commit -m "chore: apply latest changesets"
+          git log --pretty=oneline | head -n 10
+          git push
       - name: Apply changesets
         id: changesetVersion
         run: |
