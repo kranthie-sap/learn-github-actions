@@ -126,10 +126,8 @@ jobs:
           date > generated.txt
           git config user.name github-actions
           git config user.email github-actions@github.com
-          pnpm changeset version
-          git add .
           git status
-          pnpm install --lockfile-only
+          git add .
           git status
           git commit -m "chore: apply latest changesets"
           git log --pretty=oneline | head -n 10
