@@ -1,5 +1,11 @@
 # @sap-ux/weather-core
 
+## 0.0.12
+
+### Patch Changes
+
+-   4d2b478: Update weather
+
 ## 0.0.11
 
 ### Patch Changes
