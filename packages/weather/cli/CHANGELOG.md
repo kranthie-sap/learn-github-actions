@@ -1,5 +1,12 @@
 # @sap-ux/weather-cli
 
+## 0.0.11
+
+### Patch Changes
+
+-   Updated dependencies [25a2578]
+    -   @sap-ux/weather-core@0.0.11
+
 ## 0.0.10
 
 ### Patch Changes
