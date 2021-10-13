@@ -47,7 +47,7 @@ jobs:
       #   run: pnpm recursive run test
   release-manual:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -90,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   version-auto:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     outputs:
@@ -142,7 +142,7 @@ jobs:
   release-auto:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
     # This job needs to run after the version-auto commit has been merged - so check if that step returns 'false'
-    if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version-auto.outputs.changes == 'false'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version-auto.outputs.changes == 'false'
     runs-on: ubuntu-latest
     needs: version-auto
     steps:
