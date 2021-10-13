@@ -41,13 +41,13 @@ jobs:
         run: pnpm install
       - name: Run build
         run: pnpm recursive run build
-      - name: Run linting
-        run: pnpm recursive run lint
-      - name: Run unit tests
-        run: pnpm recursive run test
+      # - name: Run linting
+      #   run: pnpm recursive run lint
+      # - name: Run unit tests
+      #   run: pnpm recursive run test
   release-manual:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: ${{ false }} # && github.event_name == 'push' && github.ref == 'refs/heads/main' # disable temporarily
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -90,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   version-auto:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: build
     outputs:
@@ -121,22 +121,8 @@ jobs:
           node-version: 14.x
       - name: Install pnpm modules
         run: pnpm install
-      # - name: Generate test file
-      #   run: |
-      #     date > generated.txt
-      #     git config user.name github-actions
-      #     git config user.email github-actions@github.com
-      #     git status
-      #     git add .
-      #     git status
-      #     git commit -m "chore: apply latest changesets"
-      #     git log --pretty=oneline | head -n 10
-      #     git push
-      - name: Apply changesets
+       - name: Apply changesets
         id: changesetVersion
-        # run: |
-        #   npm install --no-package-lock --no-save @changesets/cli
-        #   echo ::set-output name=changes::$(npx changeset version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
         run: |
           echo ::set-output name=changes::$(pnpm ci:version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
           git status
@@ -156,7 +142,7 @@ jobs:
   release-auto:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
     # This job needs to run after the version-auto commit has been merged - so check if that step returns 'false'
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version-auto.outputs.changes == 'false'
+    if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.version-auto.outputs.changes == 'false'
     runs-on: ubuntu-latest
     needs: version-auto
     steps:
