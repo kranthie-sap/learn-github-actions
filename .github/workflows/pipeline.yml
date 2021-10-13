@@ -121,7 +121,7 @@ jobs:
           node-version: 14.x
       - name: Install pnpm modules
         run: pnpm install
-       - name: Apply changesets
+      - name: Apply changesets
         id: changesetVersion
         run: |
           echo ::set-output name=changes::$(pnpm ci:version 2>&1 | grep -q 'No unreleased changesets found' && echo 'false' || echo 'true')
