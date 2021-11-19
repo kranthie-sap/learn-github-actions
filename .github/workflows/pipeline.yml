@@ -78,7 +78,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: sonar-coverage-reports
-          path: packages
+          path: /github/workspace/packages
       - name: Display structure of downloaded artifacts
         run: ls -R
       - name: Run SonarCloud scan
