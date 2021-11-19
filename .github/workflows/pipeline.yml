@@ -50,7 +50,7 @@ jobs:
         with:
           name: sonar-coverage-reports
           path: |
-            packages/**/reports/test-report.xml
+            packages/**/reports/**/test-report.xml
       # - name: Run SonarCloud scan
       #   if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
       #   uses: sonarsource/sonarcloud-github-action@master
@@ -75,6 +75,8 @@ jobs:
           fetch-depth: 0
       - name: Download coverage reports
         uses: actions/download-artifact@v2
+        with:
+          name: sonar-coverage-reports
       - name: Display structure of downloaded artifacts
         run: ls -R
       - name: Run SonarCloud scan
