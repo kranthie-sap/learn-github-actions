@@ -8,11 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        node-version: [14.x]
+        os: [ubuntu-latest]
+        node-version: [12.x]
 
     steps:
       - name: Checkout code repository
@@ -41,10 +40,16 @@ jobs:
         run: pnpm install
       - name: Run build
         run: pnpm recursive run build
-      # - name: Run linting
-      #   run: pnpm recursive run lint
-      # - name: Run unit tests
-      #   run: pnpm recursive run test
+      - name: Run linting
+        run: pnpm recursive run lint
+      - name: Run unit tests
+        run: pnpm recursive run test
+      - name: Run SonarCloud scan
+        if: matrix.os == 'ubuntu-latest' && matrix.node-version == '12.x'
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+            GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   release-manual:
     # Run release job only on pushes to the main branch. The job depends on completion of the build job.
     if: ${{ false }} # github.event_name == 'push' && github.ref == 'refs/heads/main'

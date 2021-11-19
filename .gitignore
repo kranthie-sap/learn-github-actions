@@ -1,3 +1,6 @@
+# Jest sonar coverage reports
+reports
+
 # Logs
 *.log
 npm-debug.log*

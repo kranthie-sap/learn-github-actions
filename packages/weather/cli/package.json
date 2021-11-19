@@ -4,5 +4,16 @@
   "version": "0.0.12",
   "dependencies": {
     "@sap-ux/weather-core": "0.0.12"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "format": "prettier --write '**/*.{css,scss,html,js,json,ts,tsx,yaml,yml}' '!**/{out,dist,typings,node_modules}/**' '!**/*.{svg,png,xml}' --ignore-path ../../../.prettierignore",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint:fix": "eslint . --ext .ts,.tsx",
+    "test": "jest --runInBand --ci --forceExit --detectOpenHandles --colors"
+  },
+  "jestSonar": {
+    "reportPath": "reports/test/unit",
+    "reportFile": "test-report.xml"
   }
 }
