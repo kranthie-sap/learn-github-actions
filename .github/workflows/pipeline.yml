@@ -45,6 +45,9 @@ jobs:
         run: pnpm recursive run lint
       - name: Run unit tests
         run: pnpm recursive run test
+      - name: Replace sonar test coverage report parts
+        run: |
+          sed -i 's+/home/runner/work/learn-github-actions/learn-github-actions+/github/workspace+g' **/reports/**/test-report.xml
       - name: Display workspace directory
         run: |
           echo $GITHUB_WORKSPACE
