@@ -12,7 +12,8 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node-version: [12.x]
-
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     steps:
       - name: Checkout code repository
         uses: actions/checkout@v2
