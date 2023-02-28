@@ -38,14 +38,15 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
             - name: Prepare notification message
+              id: prepareSlackNotificationMessage
               run: |
                 echo 'publishedPackages=\'[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]\'' >> $GITHUB_OUTPUT
-                echo 'publishedPackagesMessage=$(jq --raw-output map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n") "${{ publishedPackages }}")' >> $GITHUB_OUTPUT
+                echo 'publishedPackagesMessage=$(jq --raw-output map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n") "${{ steps.prepareSlackNotificationMessage.outputs.publishedPackages }}")' >> $GITHUB_OUTPUT
             - name: Send Slack notification
               uses: slackapi/slack-github-action@v1.23.0
               with:
                 payload: |
-                  {"text": ":rocket: The following packages were published to npmjs.com:\n ${{ publishedPackagesMessage }}"
+                  {"text": ":rocket: The following packages were published to npmjs.com:\n ${{ steps.prepareSlackNotificationMessage.outputs.publishedPackagesMessage }}"
                 SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Install pnpm modules
               run: pnpm install
