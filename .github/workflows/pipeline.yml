@@ -40,8 +40,8 @@ jobs:
             - name: Prepare notification message
               id: prepareSlackNotificationMessage
               run: |
-                echo $'publishedPackages=\'[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]\'' >> $GITHUB_OUTPUT
-                echo $'publishedPackagesMessage=$(jq --raw-output map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n") $publishedPackages)' >> $GITHUB_OUTPUT
+                PUBLISHED_PACKAGES='[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
+                echo $'publishedPackagesMessage=$(jq --raw-output map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n") $PUBLISHED_PACKAGES)' >> $GITHUB_OUTPUT
             - name: Send Slack notification
               uses: slackapi/slack-github-action@v1.23.0
               with:
