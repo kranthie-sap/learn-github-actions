@@ -41,7 +41,8 @@ jobs:
               id: prepareSlackNotificationMessage
               run: |
                 PUBLISHED_PACKAGES='[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
-                echo "publishedPackagesMessage=$PUBLISHED_PACKAGES | $(jq --raw-output map('*' + .name + '*' + ' - ' + '<https://www.npmjs.com/package/' + .name + '|' + .version + '>') | join('\n'))" >> $GITHUB_OUTPUT
+                PUBLISHED_PACKAGES_MESSAGE=echo "$PUBLISHED_PACKAGES" | jq --raw-output map('*' + .name + '*' + ' - ' + '<https://www.npmjs.com/package/' + .name + '|' + .version + '>') | join('\n')
+                echo "publishedPackagesMessage=$PUBLISHED_PACKAGES_MESSAGE" >> $GITHUB_OUTPUT
             - name: Send Slack notification
               uses: slackapi/slack-github-action@v1.23.0
               with:
