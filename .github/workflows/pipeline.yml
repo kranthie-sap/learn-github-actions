@@ -42,13 +42,12 @@ jobs:
               run: |
                 PUBLISHED_PACKAGES='[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
                 PUBLISHED_PACKAGES_MESSAGE=echo "$PUBLISHED_PACKAGES" | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n")'
-                echo "publishedPackagesMessage=$PUBLISHED_PACKAGES_MESSAGE" >> $GITHUB_OUTPUT
                 echo $PUBLISHED_PACKAGES_MESSAGE
             - name: Send Slack notification
               uses: slackapi/slack-github-action@v1.23.0
               with:
                 payload: |
-                  {"text": ":rocket: The following packages were published to npmjs.com:\n ${{ steps.prepareSlackNotificationMessage.outputs.publishedPackagesMessage }}" }
+                  {"text": ":rocket: The following packages were published to npmjs.com:\n ${{ $PUBLISHED_PACKAGES_MESSAGE }}" }
               env:
                 SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Install pnpm modules
