@@ -39,7 +39,7 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: Prepare notification message
               run: |
-                publishedPackages = [{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]
+                publishedPackages = '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]''
                 echo 'publishedPackagesMessage=$(jq --raw-output map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\n") "${{ publishedPackages }}")' >> $GITHUB_OUTPUT
             - name: Send Slack notification
               uses: slackapi/slack-github-action@v1.23.0
