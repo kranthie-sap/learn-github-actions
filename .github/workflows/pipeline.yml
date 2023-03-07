@@ -42,7 +42,7 @@ jobs:
               run: |
                 # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
                 echo "publishedPackages="$('[{"name":"@sap-ux/ui-components","version":"1.3.6"}]')" >> $GITHUB_OUTPUT
-                echo "${{ steps.prepareSlackNotificationMessage.outputs.publishedPackages }}"
+                echo "Test ${{ steps.prepareSlackNotificationMessage.outputs.publishedPackages }}"
                 # echo "publishedPackagesMessage="$(echo "${{ steps.prepareSlackNotificationMessage.outputs.publishedPackages }}" | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_OUTPUT
                 # echo "${{ steps.prepareSlackNotificationMessage.outputs.publishedPackagesMessage }}"
             - name: Send Slack notification
