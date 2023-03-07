@@ -10,8 +10,8 @@ jobs:
     build:
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
-                node-version: [14.x, 16.x, 18.x]
+                os: [ubuntu-latest] # [ubuntu-latest, windows-latest]
+                node-version: [14.x] # [14.x, 16.x, 18.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -37,6 +37,28 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
+            - name: Prepare Slack notification message 1
+              id: prepareSlackNotificationMessage1
+              run: |
+                publishedPackages='[{"name":"@sap-ux/ui-components","version":"1.3.6"}]'
+                echo "publishedPackages=$publishedPackages" >> $GITHUB_OUTPUT
+            - name: Prepare Slack notification message 2
+              id: prepareSlackNotificationMessage2
+              run: |
+                # Random delimiter required to support multi-line environment variable value
+                EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+                echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
+                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
+                echo "$(echo '${{ steps.prepareSlackNotificationMessage1.outputs.publishedPackages }}' | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
+                echo "$EOF" >> $GITHUB_ENV
+            - name: Send Slack notification
+              # if: steps.changesets.outputs.published == 'true'
+              uses: slackapi/slack-github-action@v1.23.0
+              with:
+                payload: |
+                  {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
+              env:
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
@@ -137,22 +159,3 @@ jobs:
                   publish: pnpm ci:publish
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
-            - name: Prepare Slack notification message
-              if: steps.changesets.outputs.published == 'true'
-              id: prepareSlackNotificationMessage
-              run: |
-                # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
-                PUBLISHED_PACKAGES='${{ steps.changesets.outputs.publishedPackages }}'
-                EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-                echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
-                echo "$(echo $PUBLISHED_PACKAGES | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
-                echo "$EOF" >> $GITHUB_ENV
-                echo "${{ env.PUBLISHED_PACKAGES_MESSAGE }}"
-            - name: Send Slack notification
-              if: steps.changesets.outputs.published == 'true'
-              uses: slackapi/slack-github-action@v1.23.0
-              with:
-                payload: |
-                  {"text": ":rocket: The following packages were published to npmjs.com:\n${{ env.PUBLISHED_PACKAGES_MESSAGE }}" }
-              env:
-                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
