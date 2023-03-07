@@ -11,7 +11,7 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                node-version: [14.x, 16.x, 18.x]
+                node-version: [14.x] # [14.x, 16.x, 18.x]
         runs-on: ${{ matrix.os }}
         timeout-minutes: 15
         steps:
@@ -47,7 +47,7 @@ jobs:
                 # # publishedPackages JSON format: '[{"name": "@sap-ux/axios-extension", "version": "1.0.2"}, {"name": "@sap-ux/fiori-freestyle-writer", "version": "0.15.12"}]'
                 # echo "$(echo "${{env.PUBLISHED_PACKAGES}}" | jq --raw-output 'map("*" + .name + "*" + " - " + "<https://www.npmjs.com/package/" + .name + "|" + .version + ">") | join("\\n")')" >> $GITHUB_ENV
                 # echo "$EOF" >> $GITHUB_ENV
-                # echo "${{ env.PUBLISHED_PACKAGES_MESSAGE }}"
+                echo "$GITHUB_ENV"
             - name: Send Slack notification
               # if: steps.changesets.outputs.published == 'true'
               uses: slackapi/slack-github-action@v1.23.0
