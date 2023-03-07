@@ -40,7 +40,7 @@ jobs:
             - name: Prepare Slack notification message
               id: prepareSlackNotificationMessage
               run: |
-                echo "PUBLISHED_PACKAGES=$('[{"name":"@sap-ux/ui-components","version":"1.3.6"}]')" >> $GITHUB_ENV
+                echo 'PUBLISHED_PACKAGES="[{\"name\":\"@sap-ux/ui-components\",\"version\":\"1.3.6\"}]"' >> $GITHUB_ENV
                 # # Random delimiter required to support multi-line environment variable value
                 # EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
                 # echo "PUBLISHED_PACKAGES_MESSAGE<<$EOF" >> $GITHUB_ENV
