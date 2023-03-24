@@ -1,6 +1,45 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+    "extends": [
+        "config:base",
+        ":automergeDisabled",
+        ":combinePatchMinorReleases",
+        ":enableVulnerabilityAlerts",
+        ":enableVulnerabilityAlertsWithLabel(security)",
+        ":label(renovate)",
+        ":rebaseStalePrs",
+        ":semanticCommits",
+        ":semanticPrefixChore",
+        ":separateMultipleMajorReleases",
+        ":timezone(America/Los_Angeles)",
+        ":updateNotScheduled",
+        "workarounds:typesNodeVersioning"
+    ],
+
+    "enabledManagers": ["npm"],
+    "branchPrefix": "chore/renovate/",
+    "platformCommit": true,
+
+    "major": {
+        "dependencyDashboardApproval": true
+    },
+    "dependencyDashboardAutoclose": true,
+    "dependencyDashboardLabels": ["renovate-dashboard"],
+    "dependencyDashboardTitle": "Renovate Dependency Dashboard",
+
+    "assigneesFromCodeOwners": true,
+
+    "packageRules": [
+        {
+            "matchPackagePatterns": ["^eslint", "^@typescript/eslint"],
+            "matchDepTypes": ["devDependencies"],
+            "groupName": "dev dependencies [linting]"
+        },
+        {
+            "matchPackagePatterns": ["jest", "@types/jest"],
+            "matchDepTypes": ["devDependencies"],
+            "groupName": "dev dependencies [jest]"
+        }
+    ]
 }
